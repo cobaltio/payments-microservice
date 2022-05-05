@@ -5,6 +5,7 @@ import { PaymentsService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Listing, ListingSchema } from './schemas/lisitng.schema';
+import { Sale, SaleSchema } from './schemas/sale.schema';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Listing, ListingSchema } from './schemas/lisitng.schema';
     CacheModule.register(),
     MongooseModule.forRoot('mongodb://localhost:27017/payments-microservice'),
     MongooseModule.forFeature([{ name: Listing.name, schema: ListingSchema }]),
+    MongooseModule.forFeature([{ name: Sale.name, schema: SaleSchema }]),
     ClientsModule.register([
       {
         name: 'PRODUCTS_SERVICE',
