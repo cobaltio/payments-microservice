@@ -6,7 +6,7 @@ export class CreateListingDto {
   item_id: string;
 
   @IsNotEmpty()
-  price: number;
+  price: string;
 
   @IsNotEmpty()
   createdBy: string;
