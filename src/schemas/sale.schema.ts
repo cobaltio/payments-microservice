@@ -6,10 +6,10 @@ export type SaleDocument = Sale & Document;
 @Schema()
 export class Sale {
   @Prop({ required: true, immutable: true })
-  item_id: number;
+  item_id: string;
 
   @Prop({ required: true })
-  price: number;
+  price: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;

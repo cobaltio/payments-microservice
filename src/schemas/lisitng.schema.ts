@@ -9,7 +9,7 @@ export class Listing {
   item_id: string;
 
   @Prop({ required: true })
-  price: number;
+  price: string;
 
   @Prop({ required: true })
   createdBy: string;
