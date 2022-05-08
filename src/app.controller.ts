@@ -20,4 +20,18 @@ export class AppController {
       throw new RpcException(err);
     }
   }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @MessagePattern({ cmd: 'fill-listing' })
+  async fillListing(sale) {
+    try {
+      return await this.paymentsService.fillListing(
+        sale.listing_id,
+        sale.buyer,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new RpcException(err);
+    }
+  }
 }
