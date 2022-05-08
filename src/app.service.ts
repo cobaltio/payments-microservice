@@ -8,8 +8,8 @@ import { Contract } from 'web3-eth-contract';
 import { ConfigService } from '@nestjs/config';
 import Web3 from 'web3';
 import mintNftContract from './contracts/MyNFT.json';
-import sellNftContract from './contracts/sellNFT.json';
-import { AbiItem } from 'web3-utils';
+import sellNftContract from './contracts/SellNFT.json';
+import { AbiItem, toHex, toWei } from 'web3-utils';
 import { Cache } from 'cache-manager';
 import {
   signTypedData,
@@ -61,7 +61,7 @@ export class PaymentsService {
 
       const from = values.from;
       const to = values.to;
-      const item_id = values.tokenID.toString();
+      const item_id = values.tokenId.toString();
       const amount = values.amount;
 
       const sale = new this.saleModel({
@@ -137,6 +137,7 @@ export class PaymentsService {
     const listing: ListingDocument = await this.listingModel
       .findOne({ _id: listing_id })
       .exec();
+
     if (listing) {
       const deadline = Date.now() + 5 * 60 * 1000;
 
@@ -146,6 +147,7 @@ export class PaymentsService {
 
       const tx = {
         from: buyer,
+        value: toHex(listing.price),
         to: this.sell_contract_address,
         data: this.sellContract.methods
           .sellNft(
@@ -195,6 +197,7 @@ export class PaymentsService {
                     },
                   });
                 } else {
+                  listing.price = toWei(listing.price.toString());
                   const new_listing = new this.listingModel(listing);
                   new_listing.save();
 
