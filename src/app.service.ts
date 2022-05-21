@@ -18,6 +18,7 @@ import {
   MessageTypes,
 } from '@metamask/eth-sig-util';
 import { Sale, SaleDocument } from './schemas/sale.schema';
+import { listenerCount } from 'process';
 
 @Injectable()
 export class PaymentsService {
@@ -72,10 +73,9 @@ export class PaymentsService {
       });
 
       sale.save();
-      /* Work In Progress
-       **  - Delete Listing
-       **  - Update owner
-       */
+      this.products_microservice
+        .send({ cmd: 'set-listed' }, { item_id: item_id, flag: false })
+        .subscribe();
       this.listingModel.deleteOne({ item_id: item_id });
       this.products_microservice
         .send({ cmd: 'update-owner' }, { item_id: item_id, owner: to })
@@ -200,7 +200,12 @@ export class PaymentsService {
                   listing.price = toWei(listing.price.toString());
                   const new_listing = new this.listingModel(listing);
                   new_listing.save();
-
+                  this.products_microservice
+                    .send(
+                      { cmd: 'set-listed' },
+                      { item_id: listing.item_id, flag: true },
+                    )
+                    .subscribe();
                   resolve({ id: new_listing._id.toString() });
                 }
               });
